@@ -1,0 +1,51 @@
+pipeline {  
+    environment {
+        registry = "alexpotapov87/web_ta"
+        registryCredential = 'dockerhub'
+        dockerImage = ''
+    }  
+  
+  agent any
+  
+  stages {
+    stage('Cloning Git') {
+      steps {
+        git 'https://github.com/alexpotapov87/the_answer'
+            }
+        }
+    stage('Building image') {
+      steps{
+        script {
+          docker.build registry + ":latest"
+          dockerImage = docker.build registry + ":latest"
+                }
+            }
+        }
+    stage('Pushing image') {
+      steps{
+        script {
+          docker.withRegistry( '', registryCredential ) {
+          dockerImage.push()
+          }
+        }
+      }
+    }
+    stage('Remove Unused docker image') {
+      steps{
+        sh "docker rmi $registry:latest"
+          }
+        }
+    stage('Deploing to minikube') {
+      steps{
+        script {
+          try {
+            sh "kubectl delete deploy web -n dev"
+          } catch (err) {
+            echo "No web deplyment found, continuing"
+          }
+          sh "kubectl apply -f /home/k8s/. -n dev"
+            }
+           }
+        }
+  }
+}

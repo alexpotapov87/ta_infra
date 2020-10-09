@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress-nginx
+  labels:
+    app: the_answer
+    component: nginx
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      name: web
+      nodePort: 30080
+    - port: 443
+      name: https-placeholder
+      nodePort: 30443
+    - port: 9090
+      name: prometheus
+      nodePort: 30900
+  selector:
+    app: the_answer
+    component: nginx

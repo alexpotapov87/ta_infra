@@ -1,0 +1,24 @@
+version: '3.3'
+services:
+    jenkins:
+        image: alexpotapov87/jenkins_ta
+        volumes:
+            - C:\Users\admin\GIT\ta_infra\jenkins\volume:/var/jenkins_home
+            - //var/run/docker.sock:/var/run/docker.sock
+            - C:\Users\admin\.minikube\ca.crt:/var/crts/ca.crt
+            - C:\Users\admin\.minikube\profiles\minikube\client.crt:/var/crts/client.crt
+            - C:\Users\admin\.minikube\profiles\minikube\client.key:/var/crts/client.key
+            - C:\Users\admin\GIT\ta_infra\kubernetes:/home/k8s
+            - C:\Users\admin\GIT\ta_infra\kubernetes\k8s.config:/var/jenkins_home/.kube/config
+            - C:\Users\admin\GIT\premium-portal-279303-a3b7053d8351.json:/var/crts/gcloud.oauth.json
+        networks:
+            frontend:
+                aliases:
+                  - jenkins
+        ports:
+            - 8082:8080
+        
+
+networks:
+    frontend:
+    backend:  

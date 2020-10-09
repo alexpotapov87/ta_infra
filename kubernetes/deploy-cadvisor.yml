@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: cadvisor
+    labels:
+        app: the_answer
+        component: cadvisor
+spec:
+    replicas: 2
+    selector:
+        matchLabels:
+            app: the_answer
+            component: cadvisor    
+    template:
+        metadata:
+            name: cadvisor
+            labels:
+                app: the_answer
+                component: cadvisor    
+        spec:
+            containers:
+            - image: google/cadvisor:latest
+              name: cadvisor
+

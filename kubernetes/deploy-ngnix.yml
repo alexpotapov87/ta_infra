@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: nginx
+    labels:
+        app: the_answer
+        network: nginx_internal
+        component: nginx
+spec:
+    replicas: 2
+    selector:
+        matchLabels:
+            app: the_answer
+            network: nginx_internal
+            component: nginx    
+    template:
+        metadata:
+            name: nginx
+            labels:
+                app: the_answer
+                network: nginx_internal
+                component: nginx    
+        spec:
+            terminationGracePeriodSeconds: 10
+            containers:
+            - image: alexpotapov87/ta_nginx:latest
+              name: nginx
+              imagePullPolicy: "Always"
