@@ -1,25 +1,25 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-    name: nginx-exporter
-    labels:
-      network: nginx_internal
-      component: nginx-exporter
-spec:
-    replicas: 1
-    selector:
-        matchLabels:
-          network: nginx_internal
-          component: nginx-exporter    
-    template:
-        metadata:
-            name: nginx-exporter
-            labels:
-              network: nginx_internal
-              component: nginx-exporter    
-        spec:
-            containers:
-            - image: nginx/nginx-prometheus-exporter
-              name: nginx-exporter
-              args:
-                - '-nginx.scrape-uri=http://nginx:8080/stub_status'
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#     name: nginx-exporter
+#     labels:
+#       network: nginx_internal
+#       component: nginx-exporter
+# spec:
+#     replicas: 1
+#     selector:
+#         matchLabels:
+#           network: nginx_internal
+#           component: nginx-exporter    
+#     template:
+#         metadata:
+#             name: nginx-exporter
+#             labels:
+#               network: nginx_internal
+#               component: nginx-exporter    
+#         spec:
+#             containers:
+#             - image: nginx/nginx-prometheus-exporter
+#               name: nginx-exporter
+#               args:
+#                 - '-nginx.scrape-uri=http://nginx:8080/stub_status'

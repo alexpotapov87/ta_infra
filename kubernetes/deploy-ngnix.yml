@@ -23,6 +23,10 @@ spec:
         spec:
             terminationGracePeriodSeconds: 10
             containers:
-            - image: alexpotapov87/ta_nginx:latest
-              name: nginx
+            - name: nginx              
+              image: alexpotapov87/ta_nginx:latest
               imagePullPolicy: "Always"
+            - name: nginx-exporter
+              image: nginx/nginx-prometheus-exporter
+              args:
+                - '-nginx.scrape-uri=http://localhost:8081/stub_status'

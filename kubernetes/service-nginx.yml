@@ -8,9 +8,18 @@ metadata:
     component: nginx
 spec:
   ports:
-  - port: 8080
+  - name: nginx
+    port: 8080
     protocol: TCP
     targetPort: 8080
+  - name: nginx-metrics
+    port: 8081
+    protocol: TCP
+    targetPort: 8081
+  - name: exporter
+    port: 9113
+    protocol: TCP
+    targetPort: 9113
   selector:
     app: the_answer
     network: nginx_internal
