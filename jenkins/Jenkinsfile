@@ -48,6 +48,7 @@ pipeline {
       steps{
         sh "docker rmi $dockerImageNginx:$shortCommit"
         sh "docker rmi $dockerImageProm:$shortCommit"
+        sh "docker image prune -f"
           }
         }
 
