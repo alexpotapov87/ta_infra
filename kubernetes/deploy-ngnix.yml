@@ -24,7 +24,7 @@ spec:
             terminationGracePeriodSeconds: 10
             containers:
             - name: nginx              
-              image: alexpotapov87/ta_nginx:fb12961
+              image: alexpotapov87/ta_nginx:latest
               imagePullPolicy: "Always"
             - name: nginx-exporter
               image: nginx/nginx-prometheus-exporter

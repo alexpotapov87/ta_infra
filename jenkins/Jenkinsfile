@@ -1,14 +1,11 @@
 pipeline {  
     environment {
-        registry = "alexpotapov87"
-        registryCredential = 'dockerhub'
         dockerImageNginx = 'alexpotapov87/ta_nginx'
         dockerImageProm = 'alexpotapov87/ta_prom'
         dockerImageJen = 'alexpotapov87/jenkins_ta'
-        WORKSPACE = '/var/jenkins_home/workspace/ta_infra'
-        BUILD_ID = ''
         shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
     }  
+
   agent any
   
   stages {
@@ -21,13 +18,13 @@ pipeline {
     stage('Building image') {
       steps{
         script {
-          dir ('/var/jenkins_home/workspace/ta_infra/nginx') {
+          dir ('/var/jenkins_home/workspace/ta_infra@2/nginx') {
               sh 'docker build -t $dockerImageNginx:$shortCommit -t $dockerImageNginx:latest .'
           }            
-          dir ('/var/jenkins_home/workspace/ta_infra/prometheus') {
+          dir ('/var/jenkins_home/workspace/ta_infra@2/prometheus') {
               sh 'docker build -t $dockerImageProm:$shortCommit -t $dockerImageProm:latest .'
           }            
-          dir ('/var/jenkins_home/workspace/ta_infra/jenkins') {
+          dir ('/var/jenkins_home/workspace/ta_infra@2/jenkins') {
               sh 'docker build -t $dockerImageJen:$shortCommit -t $dockerImageJen:latest .'
           }            
             }
