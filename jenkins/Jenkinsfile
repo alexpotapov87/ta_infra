@@ -1,14 +1,14 @@
 pipeline {  
     environment {
-        registry = "alexpotapov87/"
+        registry = "alexpotapov87"
         registryCredential = 'dockerhub'
         dockerImageNginx = 'alexpotapov87/ta_nginx'
         dockerImageProm = 'alexpotapov87/ta_prom'
         dockerImageJen = 'alexpotapov87/jenkins_ta'
         WORKSPACE = '/var/jenkins_home/workspace/ta_infra'
         BUILD_ID = ''
+        shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
     }  
-  
   agent any
   
   stages {
@@ -17,22 +17,40 @@ pipeline {
         git 'https://github.com/alexpotapov87/ta_infra'
             }
         }
+
     stage('Building image') {
       steps{
         script {
           dir ('/var/jenkins_home/workspace/ta_infra/nginx') {
-              sh 'docker build -t $dockerImageNginx .'
+              sh 'docker build -t $dockerImageNginx:$shortCommit .'
           }            
           dir ('/var/jenkins_home/workspace/ta_infra/prometheus') {
-              sh 'docker build -t $dockerImageProm .'
+              sh 'docker build -t $dockerImageProm:$shortCommit .'
           }            
           dir ('/var/jenkins_home/workspace/ta_infra/jenkins') {
-              sh 'docker build -t $dockerImageJen .'
+              sh 'docker build -t $dockerImageJen:$shortCommit .'
           }            
             }
         }
     }
- 
+
+    stage('Pushing image') {
+      steps{
+        withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) { 
+          sh 'docker push $dockerImageNginx:$shortCommit'
+          sh 'docker push $dockerImageProm:$shortCommit'
+          sh 'docker push $dockerImageJen:$shortCommit'
+          }            
+            }
+        }
+
+    stage('Remove Unused docker image') {
+      steps{
+        sh "docker rmi $dockerImageNginx:$shortCommit"
+        sh "docker rmi $dockerImageProm:$shortCommit"
+          }
+        }
+
     stage('Deploing to minikube') {
       steps{
         script {
@@ -47,5 +65,6 @@ pipeline {
             }
            }
         }
+
   }
 }
