@@ -28,5 +28,6 @@ spec:
               imagePullPolicy: "Always"
             - name: nginx-exporter
               image: nginx/nginx-prometheus-exporter
+              imagePullPolicy: "Always"
               args:
                 - '-nginx.scrape-uri=http://localhost:8081/stub_status'

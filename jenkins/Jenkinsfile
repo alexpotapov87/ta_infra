@@ -22,13 +22,13 @@ pipeline {
       steps{
         script {
           dir ('/var/jenkins_home/workspace/ta_infra/nginx') {
-              sh 'docker build -t $dockerImageNginx:$shortCommit .'
+              sh 'docker build -t $dockerImageNginx:$shortCommit -t $dockerImageNginx:latest .'
           }            
           dir ('/var/jenkins_home/workspace/ta_infra/prometheus') {
-              sh 'docker build -t $dockerImageProm:$shortCommit .'
+              sh 'docker build -t $dockerImageProm:$shortCommit -t $dockerImageProm:latest .'
           }            
           dir ('/var/jenkins_home/workspace/ta_infra/jenkins') {
-              sh 'docker build -t $dockerImageJen:$shortCommit .'
+              sh 'docker build -t $dockerImageJen:$shortCommit -t $dockerImageJen:latest .'
           }            
             }
         }
@@ -37,9 +37,9 @@ pipeline {
     stage('Pushing image') {
       steps{
         withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) { 
-          sh 'docker push $dockerImageNginx:$shortCommit'
-          sh 'docker push $dockerImageProm:$shortCommit'
-          sh 'docker push $dockerImageJen:$shortCommit'
+          sh 'docker push $dockerImageNginx'
+          sh 'docker push $dockerImageProm'
+          sh 'docker push $dockerImageJen'
           }            
             }
         }
