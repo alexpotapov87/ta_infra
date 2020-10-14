@@ -23,7 +23,7 @@ spec:
         spec:
             terminationGracePeriodSeconds: 10
             containers:
-            - image: alexpotapov87/ta_prom:9113
+            - image: alexpotapov87/ta_prom:latest
               name: prometheus
               imagePullPolicy: "Always"
               volumeMounts:
