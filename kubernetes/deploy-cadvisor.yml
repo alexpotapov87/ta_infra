@@ -6,7 +6,7 @@ metadata:
         app: the_answer
         component: cadvisor
 spec:
-    replicas: 2
+    replicas: 1
     selector:
         matchLabels:
             app: the_answer

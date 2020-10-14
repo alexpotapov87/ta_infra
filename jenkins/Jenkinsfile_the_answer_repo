@@ -41,7 +41,7 @@ pipeline {
           try {
             sh "kubectl delete deploy web -n dev"
           } catch (err) {
-            echo "No web deplyment found, continuing"
+            echo "No web deployment found, continuing"
           }
           sh "kubectl apply -f /home/k8s/. -n dev"
             }
