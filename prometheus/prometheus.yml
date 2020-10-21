@@ -22,6 +22,10 @@ scrape_configs:
     static_configs:
       - targets:
         - 'cadvisor:8084'
+    scrape_interval: 5m
+    scrape_timeout: 1m
+    tls_config:
+      insecure_skip_verify: true
 
   - job_name: 'minikube node exporter'
     static_configs:
