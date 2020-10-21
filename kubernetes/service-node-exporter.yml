@@ -6,11 +6,10 @@ metadata:
     component: node-exporter
   name: node-exporter
 spec:
-  clusterIP: None
   ports:
-  - name: https
+  - name: '9100'
     port: 9100
-    targetPort: https
+    targetPort: 9100
   selector:
     app: the_answer
     component: node-exporter

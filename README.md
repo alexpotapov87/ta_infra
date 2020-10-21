@@ -6,3 +6,6 @@ sudo chmod 777 /mnt/data/prom
 
 ssh into pod:
 kubectl.exe exec --tty --stdin nginx-76fcfdb45d-275j6  -- sh
+
+for docker.sock local:
+chmod 777 /var/run/docker.sock

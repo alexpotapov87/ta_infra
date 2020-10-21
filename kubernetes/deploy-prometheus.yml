@@ -4,21 +4,21 @@ metadata:
     name: prometheus
     labels:
         app: the_answer
-        network: nginx_internal
+        network: internal
         component: prometheus
 spec:
     replicas: 1
     selector:
         matchLabels:
             app: the_answer
-            network: nginx_internal
+            network: internal
             component: prometheus    
     template:
         metadata:
             name: prometheus
             labels:
                 app: the_answer
-                network: nginx_internal
+                network: internal
                 component: prometheus    
         spec:
             terminationGracePeriodSeconds: 10

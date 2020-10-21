@@ -1,11 +1,12 @@
 apiVersion: apps/v1
-kind: DaemonSet #should be DeamonSet for cluster
+kind: Deployment #should be DeamonSet for cluster
 metadata:
     name: node-exporter
     labels:
         app: the_answer
         component: node-exporter
 spec:
+    replicas: 1
     selector:
       matchLabels:
         app: the_answer
@@ -22,18 +23,20 @@ spec:
               - --path.procfs=/host/proc
               - --path.sysfs=/host/sys
               - --path.rootfs=/host/root
+              - --path.containersfs=/var/lib/docker/containers
+              - --path.podsfs=/var/log/pods
               - --no-collector.wifi
               - --no-collector.hwmon
-              - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+|var/lib/kubelet/pods/.+)($|/)
+              - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/containers.+|var/lib/kubelet/pods/.+var/log/pods/.+)($|/)
               image: quay.io/prometheus/node-exporter:v1.0.1
               name: node-exporter
               resources:
                 limits:
-                  cpu: 250m
-                  memory: 180Mi
+                  cpu: 50m
+                  memory: 80Mi
                 requests:
-                  cpu: 102m
-                  memory: 180Mi
+                  cpu: 22m
+                  memory: 30Mi
               volumeMounts:
               - mountPath: /host/proc
                 mountPropagation: HostToContainer
@@ -43,6 +46,14 @@ spec:
                 mountPropagation: HostToContainer
                 name: sys
                 readOnly: true
+              - mountPath: /var/lib/docker/containers
+                mountPropagation: HostToContainer
+                name: containers
+                readOnly: true
+              - mountPath: /var/log/pods
+                mountPropagation: HostToContainer
+                name: pods
+                readOnly: true
               - mountPath: /host/root
                 mountPropagation: HostToContainer
                 name: root
@@ -50,7 +61,7 @@ spec:
             - args:
               - --logtostderr
               - --secure-listen-address=[$(IP)]:9100
-              - --tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+              # - --tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
               - --upstream=http://127.0.0.1:9100/
               env:
               - name: IP
@@ -65,11 +76,11 @@ spec:
                 name: https
               resources:
                 limits:
-                  cpu: 20m
-                  memory: 40Mi
+                  cpu: 200m
+                  memory: 400Mi
                 requests:
                   cpu: 10m
-                  memory: 20Mi
+                  memory: 50Mi
             hostNetwork: true
             hostPID: true
             nodeSelector:
@@ -77,7 +88,7 @@ spec:
             securityContext:
                 runAsNonRoot: true
                 runAsUser: 65534
-            serviceAccountName: node-exporter
+            # serviceAccountName: node-exporter
             tolerations:
                 - operator: Exists
             volumes:
@@ -90,6 +101,9 @@ spec:
             - hostPath:
                 path: /
               name: root
-    updateStrategy:
-        rollingUpdate:
-            maxUnavailable: 10%
+            - hostPath:
+                path: /var/log/pods
+              name: pods
+            - hostPath:
+                path: /var/lib/docker/containers
+              name: containers

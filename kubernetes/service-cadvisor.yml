@@ -4,13 +4,15 @@ metadata:
   name: cadvisor
   labels:
     app: the_answer
+    network: internal
     component: cadvisor
 spec:
   ports:
     - name: http
-      port: 8080
+      port: 8084
       protocol: TCP
       targetPort: 8080
   selector:
     app: the_answer
+    network: internal
     component: cadvisor
